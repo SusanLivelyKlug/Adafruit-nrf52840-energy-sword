@@ -55,6 +55,17 @@ P4 = (230, 230, 0, 0)  # 4 is tip
 P3 = (255, 155, 0, 0)  #
 P2 = (255, 90, 0, 0)
 P1 = (255, 55, 0, 0)
+PPERIOD = 2
+PSPEED = .25
+pm1 = Pulse(pixel_m1, speed=PSPEED, period=PPERIOD, color=P1)
+pm2 = Pulse(pixel_m2, speed=PSPEED, period=PPERIOD, color=P2)
+pm3 = Pulse(pixel_m3, speed=PSPEED, period=PPERIOD, color=P3)
+pm4 = Pulse(pixel_m4, speed=PSPEED, period=PPERIOD, color=P4)
+def prophetsbane():
+    pm1.animate()
+    pm2.animate()
+    pm3.animate()
+    pm4.animate()
 
 #-------------------- Vorpal animation
 SIZE = 3
@@ -80,7 +91,7 @@ R1 = (255, 0, 0, 0)  # 4 is tip
 R2 = (211, 10, 0, 0)
 R4 = (200, 15, 0, 0)
 R3 = (100, 0, 0, 0)
-pulse = Pulse(pixels, speed=.2, period=3, color=BLUE)
+
 PPERIOD = 2
 PSPEED = .25
 pulse_m1 = Pulse(pixel_m1, speed=PSPEED, period=PPERIOD, color=R1)
@@ -92,6 +103,9 @@ def map_pulse():
     pulse_m2.animate()
     pulse_m3.animate()
     pulse_m4.animate()
+
+#-------------------- BLE Connect indicator
+pulse = Pulse(pixels, speed=.2, period=3, color=BLUE)
 
 #-------------------- Ravening
 # Colors
@@ -137,7 +151,7 @@ def infected():
 # button 2 is pulse red
 # button 3 is
 # button 4 is green comet
-MAX_ANIMS = 5  # 0,1,2,3,4
+MAX_ANIMS = 5  # 1,2,3,4,5 plus 0 is all black animation
 animation_num = 0
 def run_animation(animation_num):
     if animation_num == 0:
@@ -150,6 +164,8 @@ def run_animation(animation_num):
     elif animation_num == 3:
         infected()
     elif animation_num == 4:
+        prophetsbane()
+    elif animation_num == 5:
         vorpal()
 
 #-------------------- Bluefruit setup
@@ -263,22 +279,24 @@ while True:
                     # ?change the speed of the animation by incrementing offset?
                     # ?change the brightness overall?
                     elif packet.button == ButtonPacket.UP:
-                        brightness_increment += 1
+                        # brightness_increment += 1
                         # print("brightness up")
+                        sword_on = True
+                        animation_num = 5
                     elif packet.button == ButtonPacket.DOWN:
                         brightness_increment -= 1
                         # print("brightness down")
-                    elif packet.button == ButtonPacket.LEFT:  #move forward through animations
-                        offset_increment -= 1
+                    elif packet.button == ButtonPacket.RIGHT:  #move forward through animations
+                        #offset_increment -= 1
                         animation_num += 1
                         if animation_num > MAX_ANIMS:
-                            animation_num = 0  #loop around
+                            animation_num = 1  #loop around
                         if DEBUG == True:
                             print("offset_increment ", offset_increment)
-                    elif packet.button == ButtonPacket.RIGHT:  #move back through animations
-                        offset_increment += 1
+                    elif packet.button == ButtonPacket.LEFT:  #move back through animations
+                        #offset_increment += 1
                         animation_num -= 1
-                        if animation_num < 0:
+                        if animation_num < 1:
                             animation_num = MAX_ANIMS  #loop around
                         if DEBUG == True:
                             print("offset_increment ", offset_increment)
